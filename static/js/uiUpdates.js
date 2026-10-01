@@ -2,6 +2,7 @@ import { PHASE_SECONDS, DAY_SECONDS, METER_MAX, METERS, SEASON_DAYS, seasonSecon
 import { WEATHER } from './resourceManagement.js';
 import { PARTS, PART_FIELD, BULK_GROW_LIMIT, getCost, getBlockers, nextGoal } from './growth.js';
 import { SPECIALIZATIONS, SPECIALIZATION_SECONDS, activeSpecialization } from './specialization.js';
+import { renderPlant } from './plantView.js';
 
 const TIMER_CIRCUMFERENCE = 2 * Math.PI * 37;
 const COST_LABEL = { atp: 'ATP', water: '💧', nutrients: '🧪' };
@@ -149,6 +150,7 @@ export function render(state, rates, isPaused, bestSeason) {
     renderMeters(state, rates);
     renderGrowButtons(state, isPaused);
     renderSpecialization(state, isPaused);
+    renderPlant(state);
     for (const field of Object.values(PART_FIELD)) setText(`${field}-count`, String(state[field]));
     setText('goal-text', nextGoal(state));
     setText('tip-text', state.seasonOver ? '' : tipFor(state, rates));

@@ -759,6 +759,131 @@ body.paused .right-nav {
     opacity: 0.6;
 }
 
+/* Plant view: parts grow in as they are bought; the shoot sways around its base */
+.plant-view {
+    margin-bottom: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.plant-view svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.plant-sky {
+    fill: #bfe6ff;
+    transition: fill 2s;
+}
+
+.plant-view.night .plant-sky {
+    fill: #1c2541;
+}
+
+.plant-view.fall .plant-sky {
+    fill: #f6d7a7;
+}
+
+.plant-soil {
+    fill: #5d4037;
+}
+
+.plant-grass {
+    fill: #7cb342;
+}
+
+.plant-seed {
+    fill: #a1887f;
+}
+
+.plant-root,
+.plant-stem {
+    fill: none;
+    stroke-linecap: round;
+}
+
+.plant-root {
+    stroke: #c8a98f;
+}
+
+.plant-stem {
+    stroke: #558b2f;
+}
+
+.plant-leaf {
+    transition: fill 3s;
+}
+
+.leaf-0 { fill: #4caf50; }
+.leaf-1 { fill: #66bb6a; }
+.leaf-2 { fill: #388e3c; }
+.plant-view.fall .leaf-0 { fill: #e65100; }
+.plant-view.fall .leaf-1 { fill: #f9a825; }
+.plant-view.fall .leaf-2 { fill: #bf360c; }
+
+.petal-0 { fill: #f48fb1; }
+.petal-1 { fill: #ce93d8; }
+.petal-2 { fill: #fafafa; }
+
+.plant-flower-center {
+    fill: #fdd835;
+}
+
+.plant-shoot {
+    transform-box: view-box;
+    transform-origin: 300px 160px;
+    animation: plant-sway 7s ease-in-out infinite alternate;
+}
+
+body.paused .plant-shoot {
+    animation-play-state: paused;
+}
+
+/* Paths carry pathLength="1", so a dash of 1 is the whole path */
+.grow-line {
+    stroke-dasharray: 1;
+    animation: plant-draw 0.8s ease-out both;
+}
+
+/* Leaves and flowers sit in a group translated to their attachment point, so they scale from it */
+.grow-in {
+    animation: plant-unfold 0.6s ease-out both;
+}
+
+.grow-bloom {
+    animation: plant-bloom 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes plant-sway {
+    from { transform: rotate(-1.2deg); }
+    to { transform: rotate(1.2deg); }
+}
+
+@keyframes plant-draw {
+    /* Round caps would otherwise show as dots before any of the line is drawn */
+    from { stroke-dashoffset: 1; opacity: 0; }
+    10% { opacity: 1; }
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes plant-unfold {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+}
+
+@keyframes plant-bloom {
+    from { transform: scale(0) rotate(-90deg); }
+    to { transform: scale(1) rotate(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .plant-view * {
+        animation: none !important;
+    }
+}
+
 /* Toasts replace blocking alert() dialogs */
 #toast-container {
     position: fixed;

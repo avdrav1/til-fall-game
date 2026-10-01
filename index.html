@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Til Fall</title>
+
+    <link rel="stylesheet" href="static/css/styles.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+    <!-- preload="none": the track is 17 MB and only plays once the player enables music -->
+    <audio id="backgroundMusic" loop preload="none">
+        <source src="static/wav/plant-game.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+    <h1>Til Fall</h1>
+
+    <div class="game-container">
+
+        <!-- Left: clock, weather, specialization -->
+        <nav class="left-nav">
+            <div class="nav-section">
+                <h3 class="section-title" id="day-counter">Day 1</h3>
+                <div id="day-night-background" class="day-night-transition">
+                    <svg id="day-night-clock" width="200" height="200" viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="95" fill="#FFDD00" />
+                        <path id="clock-hand" d="M100 100 L100 10" stroke="#333" stroke-width="4" />
+                        <circle cx="100" cy="100" r="5" fill="#333" />
+                    </svg>
+                    <p id="day-night-indicator">Daytime 🌞</p>
+                    <div class="weather-info">
+                        <p id="weather-indicator">Clear ☀️</p>
+                    </div>
+                    <p id="phase-countdown" class="phase-countdown"></p>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <h3 class="section-title">Choose Specialization</h3>
+                <button class="specialization-button" data-specialization="roots">Specialize in Roots</button>
+                <button class="specialization-button" data-specialization="leaves">Specialize in Leaves</button>
+                <button class="specialization-button" data-specialization="flowers">Specialize in Flowers</button>
+                <div id="specialization-description" class="specialization-description">Hover a specialization to see what it does. Only one can be active at a time.</div>
+
+                <h3 class="section-title">Current Specialization</h3>
+                <div id="specialization-display" class="specialization-info">
+                    <div class="specialization-container">
+                        <svg class="specialization-timer" viewBox="0 0 80 80">
+                            <circle class="timer-background" cx="40" cy="40" r="37" />
+                            <circle id="specialization-progress" class="timer-progress" cx="40" cy="40" r="37" />
+                        </svg>
+                        <div id="specialization-emoji" class="specialization-emoji"></div>
+                    </div>
+                    <div id="specialization-text" class="specialization-text">None</div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Centre: ATP, goal, meters -->
+        <div class="main-content">
+            <div id="season-bar" class="season-bar">
+                <span id="season-countdown"></span>
+                <span id="season-score"></span>
+                <span id="season-best"></span>
+            </div>
+
+            <div id="atp-production" class="highlight-box">
+                <p><strong>Current ATP:</strong> <span id="atp-counter">25</span></p>
+                <p><strong>Production:</strong> <span id="atp-production-rate">0.00 per second</span></p>
+                <p id="atp-breakdown" class="atp-breakdown"></p>
+            </div>
+
+            <div id="goal-box" class="goal-box" aria-live="polite">
+                <p><strong>🎯 Next:</strong> <span id="goal-text"></span></p>
+                <p id="tip-text" class="tip-text"></p>
+            </div>
+
+            <div id="resource-meters">
+                <div class="meter-container">
+                    <div class="meter-header">
+                        <span class="meter-label">💧 Water</span>
+                        <span class="meter-value" id="water-value"></span>
+                        <span class="meter-net" id="water-net"></span>
+                    </div>
+                    <progress id="water-meter" class="resource-meter" value="0" max="100"></progress>
+                    <p id="water-rate" class="meter-breakdown"></p>
+                </div>
+                <div class="meter-container">
+                    <div class="meter-header">
+                        <span class="meter-label">🧪 Nutrients</span>
+                        <span class="meter-value" id="nutrients-value"></span>
+                        <span class="meter-net" id="nutrients-net"></span>
+                    </div>
+                    <progress id="nutrients-meter" class="resource-meter" value="0" max="100"></progress>
+                    <p id="nutrients-rate" class="meter-breakdown"></p>
+                </div>
+                <div class="meter-container">
+                    <div class="meter-header">
+                        <span class="meter-label">☀️ Sunlight</span>
+                        <span class="meter-value" id="sunlight-value"></span>
+                        <span class="meter-net" id="sunlight-net"></span>
+                    </div>
+                    <progress id="sunlight-meter" class="resource-meter" value="0" max="100"></progress>
+                    <p id="sunlight-rate" class="meter-breakdown"></p>
+                </div>
+                <div class="meter-container">
+                    <div class="meter-header">
+                        <span class="meter-label">🌫️ CO₂</span>
+                        <span class="meter-value" id="co2-value"></span>
+                        <span class="meter-net" id="co2-net"></span>
+                    </div>
+                    <progress id="co2-meter" class="resource-meter" value="0" max="100"></progress>
+                    <p id="co2-rate" class="meter-breakdown"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: grow buttons and plant parts -->
+        <nav class="right-nav">
+            <div class="nav-section">
+                <h3 class="section-title">Grow Plant Parts</h3>
+                <button id="grow-root" class="grow-button" data-part="root"><span class="grow-label">Grow Root <kbd>1</kbd></span><span class="grow-cost" id="grow-root-cost"></span></button>
+                <p class="grow-blocker" id="grow-root-blocker"></p>
+                <button id="grow-stem" class="grow-button" data-part="stem"><span class="grow-label">Grow Stem <kbd>2</kbd></span><span class="grow-cost" id="grow-stem-cost"></span></button>
+                <p class="grow-blocker" id="grow-stem-blocker"></p>
+                <button id="grow-leaf" class="grow-button" data-part="leaf"><span class="grow-label">Grow Leaf <kbd>3</kbd></span><span class="grow-cost" id="grow-leaf-cost"></span></button>
+                <p class="grow-blocker" id="grow-leaf-blocker"></p>
+                <button id="grow-flower" class="grow-button" data-part="flower"><span class="grow-label">Grow Flower <kbd>4</kbd></span><span class="grow-cost" id="grow-flower-cost"></span></button>
+                <p class="grow-blocker" id="grow-flower-blocker"></p>
+            </div>
+
+            <div class="nav-section">
+                <h3 class="section-title">Plant Parts</h3>
+
+                <div class="plant-part">
+                    <img src="static/img/roots.png" alt="Roots" class="plant-badge-image">
+                    <span id="roots-count" class="badge-count">0</span>
+                    <div class="plant-part-label">Roots</div>
+                </div>
+
+                <div class="plant-part">
+                    <img src="static/img/stems.png" alt="Stems" class="plant-badge-image">
+                    <span id="stems-count" class="badge-count">0</span>
+                    <div class="plant-part-label">Stems</div>
+                </div>
+
+                <div class="plant-part">
+                    <img src="static/img/leaves.png" alt="Leaves" class="plant-badge-image">
+                    <span id="leaves-count" class="badge-count">0</span>
+                    <div class="plant-part-label">Leaves</div>
+                </div>
+
+                <div class="plant-part">
+                    <img src="static/img/flowers.png" alt="Flowers" class="plant-badge-image">
+                    <span id="flowers-count" class="badge-count">0</span>
+                    <div class="plant-part-label">Flowers</div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div id="game-controls">
+        <button id="pause-game">Pause <kbd>P</kbd></button>
+        <button id="reset-game">Reset Game</button>
+        <button id="music-toggle">Enable Music</button>
+        <p class="controls-hint">Keys 1–4 grow a part. Hold Shift while clicking or pressing a key to grow up to 10 at once.<br>The season keeps going while you're away; pause first to stop the clock.</p>
+    </div>
+
+    <div id="season-over" class="season-over" hidden>
+        <div class="season-card" role="dialog" aria-labelledby="season-over-title">
+            <h2 id="season-over-title">🍂 Fall has come</h2>
+            <p id="season-final-score"></p>
+            <p id="season-final-best"></p>
+            <button id="new-season">Plant a new seed 🌱</button>
+        </div>
+    </div>
+
+    <div id="toast-container" aria-live="polite"></div>
+
+    <script type="module" src="static/js/gameLoop.js"></script>
+</body>
+</html>
